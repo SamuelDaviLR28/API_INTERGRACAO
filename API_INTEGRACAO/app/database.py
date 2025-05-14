@@ -1,32 +1,27 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import os
+
 from dotenv import load_dotenv
+from pathlib import Path
 
-load_dotenv()
+env_path = Path(__file__).resolve().parent.parent / '.env'
+load_dotenv(dotenv_path=env_path)
 
-DB_URL = os.getenv("DATABASE_URL")
-if not DB_URL:
-    raise ValueError("DATABASE_URL não definido no .env")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-engine = create_engine(DB_URL)
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL não definido nas variáveis de ambiente (.env)")
+
+DATABASE_URL = DATABASE_URL.strip()
+
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-import mysql.connector
-from mysql.connector import Error
-
 def get_connection():
-    try:
-        connection = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="13791379",
-            database="api_integracao"
-        )
-        if connection.is_connected():
-            return connection
-    except Error as e:
-        print(f"Erro ao conectar com o MySQL: {e}")
-        return None
+    return SessionLocal()
+
+print("DEBUG >>> Valor bruto da DATABASE_URL:", repr(DATABASE_URL))
+
