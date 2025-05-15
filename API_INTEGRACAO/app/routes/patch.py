@@ -6,4 +6,5 @@ router = APIRouter(prefix="/patch", tags=["Patch"])
 
 @router.patch("/", dependencies=[Depends(verify_token)])
 async def update_patch(data: dict):
-      return {"mensagem": "Patch atualizado com sucesso"}
+    # Aqui vai a lógica de atualização do patch
+    return {"mensagem": "Patch atualizado com sucesso"}
